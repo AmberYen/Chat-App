@@ -1,0 +1,12 @@
+#schema.graphql
+type Query {
+  currentUser: User!
+  messages: [Message!]
+}
+type User {
+  id: String!
+  name: String!
+}
+type Message {
+  message: String!
+}
