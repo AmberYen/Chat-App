@@ -1,11 +1,24 @@
-import Users, { DBUser } from './models/users';
-
+import Users from './models/users';
+import Message from './models/message';
 class Db {
 
-  async getUserById(id: string) {
-    return Users.findById(id);
+  async getUserByEmail(email: string) {
+    return Users.findOne({ email });
   }
-   
+  async createMessage(senderId: string, receiverId: string, message: string) {
+    const userText = new Message({
+      senderId,
+      receiverId,
+      message
+    });
+
+    await userText.save();
+    // pubsub.publish("newMessage", {
+    //   newMessage: userText,
+    //   receiverMail
+    // });
+    return userText;
+  } 
 };
 
 export default Db;

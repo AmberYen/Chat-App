@@ -9,8 +9,7 @@ import { PORT, STATIC_ROOT_FOLDER_PATH } from './constants';
 import { createApolloServer } from "./graphql/apollo-server";
 import Db from './db';
 
-const { DB_URL  } = process.env;
-
+const { DB_URL } = process.env;
 
 const app = express();
 

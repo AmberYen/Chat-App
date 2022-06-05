@@ -2,6 +2,13 @@
 type Query {
   currentUser: User!
   messages: [Message!]
+  token(email: String!): String!
+}
+type Mutation {
+  createMessage(senderId: String! receiverId: String! message: String!): Message!
+}
+type Subscription {
+  newMessage(receiverMail: String!): Message
 }
 type User {
   id: String!

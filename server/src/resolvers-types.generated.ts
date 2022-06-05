@@ -4,6 +4,7 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -18,10 +19,38 @@ export type Message = {
   message: Scalars['String'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  createMessage: Message;
+};
+
+
+export type MutationCreateMessageArgs = {
+  message: Scalars['String'];
+  receiverId: Scalars['String'];
+  senderId: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   currentUser: User;
   messages?: Maybe<Array<Message>>;
+  token: Scalars['String'];
+};
+
+
+export type QueryTokenArgs = {
+  email: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  newMessage?: Maybe<Message>;
+};
+
+
+export type SubscriptionNewMessageArgs = {
+  receiverMail: Scalars['String'];
 };
 
 export type User = {
@@ -101,8 +130,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Message: ResolverTypeWrapper<Message>;
+  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Subscription: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
 };
 
@@ -110,8 +141,10 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Message: Message;
+  Mutation: {};
   Query: {};
   String: Scalars['String'];
+  Subscription: {};
   User: User;
 };
 
@@ -120,9 +153,18 @@ export type MessageResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createMessage?: Resolver<ResolversTypes['Message'], ParentType, ContextType, RequireFields<MutationCreateMessageArgs, 'message' | 'receiverId' | 'senderId'>>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   currentUser?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   messages?: Resolver<Maybe<Array<ResolversTypes['Message']>>, ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<QueryTokenArgs, 'email'>>;
+};
+
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  newMessage?: SubscriptionResolver<Maybe<ResolversTypes['Message']>, "newMessage", ParentType, ContextType, RequireFields<SubscriptionNewMessageArgs, 'receiverMail'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -133,7 +175,9 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = {
   Message?: MessageResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
 

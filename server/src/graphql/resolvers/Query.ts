@@ -1,9 +1,19 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
+import * as jwt from 'jsonwebtoken';
+
 import { QueryResolvers } from "../../resolvers-types.generated";
 import { ResolverContext } from "../resolvers";
 
 const queryUserResolvers: QueryResolvers<ResolverContext> = {
-  currentUser: async (_, __, { db }) => {
-    const user = await db.getUserById("629b631bca58aacf50fba7bb");
+  currentUser: async (_, __, { db, email }) => { // TODO: change to controllers
+    if (!email) {
+      throw new Error(
+        'permission denied'
+      ); 
+    }
+    const user = await db.getUserByEmail(email);
     if (!user) {
       throw new Error(
         'user was requested, but there are no users in the database'
@@ -17,6 +27,9 @@ const queryUserResolvers: QueryResolvers<ResolverContext> = {
     }, {
       message: "How are you?"
     }]
+  },
+  token: (_, args) => {
+    return jwt.sign({ data: args.email }, <string>process.env.JWT_AUTH_SALT);
   },
 }
 
