@@ -12,9 +12,13 @@ import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader"
 import { loadSchemaSync } from "@graphql-tools/load"
 import { addResolversToSchema } from "@graphql-tools/schema"
 import * as jwt from 'jsonwebtoken'
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+
 import { GRAPHQL_SCHEMA_PATH } from "../constants"
 import Db from '../db';
 import resolvers, { ResolverContext } from "./resolvers";
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
 
 // db schema
 import Users from "../models/users";
@@ -22,12 +26,30 @@ import Users from "../models/users";
 const SCHEMA = loadSchemaSync(GRAPHQL_SCHEMA_PATH, {
   loaders: [new GraphQLFileLoader()],
 })
+const pubsub = new RedisPubSub();
 
 export async function createApolloServer(
   db: Db,
   httpServer: Server,
   app: express.Application
 ): Promise<ApolloServer<ExpressContext>> {
+  const graphqlSchema = addResolversToSchema({
+    schema: SCHEMA,
+    resolvers
+  });
+
+  // Creating the WebSocket server
+  const wsServer = new WebSocketServer({
+    // This is the `httpServer` we created in a previous step.
+    server: httpServer,
+    // Pass a different path here if your ApolloServer serves at
+    // a different path.
+    path: '/graphql',
+  });
+
+  // Hand in the schema we just created and have the
+  // WebSocketServer start listening.
+  const serverCleanup = useServer({ schema: graphqlSchema }, wsServer); 
   
   const context: ({ req }: any) => Promise<ResolverContext> = async ({ req }: any) => {
     // verify user
@@ -41,7 +63,7 @@ export async function createApolloServer(
       // TODO: refactor
       return await Users.find({ email: email }).then((response: any) => {
         if (response.length > 0) {
-          return { isUserLogged: true, email: email, db };
+          return { isUserLogged: true, email: email, db, pubsub };
         }
         return { isUserLogged: false, db };
       });
@@ -51,13 +73,19 @@ export async function createApolloServer(
   };
 
   const server = new ApolloServer({
-    schema: addResolversToSchema({
-      schema: SCHEMA,
-      resolvers
-    }),
+    schema: graphqlSchema,
     context, 
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
     ],
   })
   await server.start()

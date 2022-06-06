@@ -1,17 +1,22 @@
 import queryUserResolvers from "./resolvers/Query";
 import mutationMessageResolver from "./resolvers/Mutation";
+import subscriptionMessageResolver from "./resolvers/SubScription";
 import { Resolvers } from "../resolvers-types.generated";
 import Db from "../db"
+import { RedisPubSub } from "graphql-redis-subscriptions";
 
 export interface ResolverContext {
   db: Db
   isUserLogged: boolean
   email?: string
+  pubsub?: RedisPubSub
 }
 
-const resolvers: Resolvers<ResolverContext> = {
+// TODO: fix type check issue here
+const resolvers = {
   Query: queryUserResolvers,
-  Mutation: mutationMessageResolver
+  Mutation: mutationMessageResolver,
+  Subscription: subscriptionMessageResolver
 }
 
 export default resolvers;

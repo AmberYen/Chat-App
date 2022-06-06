@@ -33,7 +33,7 @@ async function main() {
   )
 
   await new Promise<void>((resolve) =>
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       console.log(
         [
           console.log(' GraphQL API listening on   '),
