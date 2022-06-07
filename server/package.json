@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -p .",
     "codegen": "yarn graphql-codegen",
-    "dev": "yarn concurrently 'yarn nodemon' 'tsc --watch --preserveWatchOutput' -n node,ts -c green.bgBlack,white.bgBlue"
+    "dev": "yarn concurrently 'yarn nodemon' 'tsc --watch --preserveWatchOutput' -n node,ts -c green.bgBlack,white.bgBlue",
+    "start": "node ./dist/index.js"
   },
   "keywords": [
     "node.js",

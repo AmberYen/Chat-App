@@ -1,7 +1,6 @@
 import queryUserResolvers from "./resolvers/Query";
 import mutationMessageResolver from "./resolvers/Mutation";
 import subscriptionMessageResolver from "./resolvers/SubScription";
-import { Resolvers } from "../resolvers-types.generated";
 import Db from "../db"
 import { RedisPubSub } from "graphql-redis-subscriptions";
 

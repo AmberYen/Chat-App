@@ -3,7 +3,7 @@ import { MutationResolvers } from "../../resolvers-types.generated"
 
 const mutationMessageResolver: MutationResolvers<ResolverContext> =
   {
-    async createMessage(_parent, args, { email, db, pubsub }) {
+    async createMessage(_parent, args, { db, pubsub }) {
       const { senderId, receiverId, message } = args;
 
       const dbMessage = await db.createMessage(
