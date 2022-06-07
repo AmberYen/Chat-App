@@ -1,0 +1,21 @@
+# Docker Compose for Chatting app
+version: '3.7'
+services:
+  server:
+    build:
+      context: server
+  mongo:
+    image: "mongo:3.6"
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+# Storage Volumes (non-volatile)
+volumes:
+  mongodata:
+    driver: local
