@@ -13,6 +13,7 @@ import { loadSchemaSync } from "@graphql-tools/load"
 import { addResolversToSchema } from "@graphql-tools/schema"
 import * as jwt from 'jsonwebtoken'
 import { RedisPubSub } from 'graphql-redis-subscriptions';
+import * as Redis from 'ioredis';
 
 import { GRAPHQL_SCHEMA_PATH } from "../constants"
 import Db from '../db';
@@ -26,7 +27,22 @@ import Users from "../models/users";
 const SCHEMA = loadSchemaSync(GRAPHQL_SCHEMA_PATH, {
   loaders: [new GraphQLFileLoader()],
 })
-const pubsub = new RedisPubSub();
+declare var process : {
+  env: {
+    REDIS_DOMAIN_NAME: string,
+    JWT_AUTH_SALT: string,
+  }
+}
+console.log('REDIS_DOMAIN_NAME', process.env.REDIS_DOMAIN_NAME);
+const options = {
+  host: process.env.REDIS_DOMAIN_NAME || '',
+  port: 6379,
+};
+
+const pubsub = new RedisPubSub({
+  publisher: new Redis(options),
+  subscriber: new Redis(options)
+});
 
 export async function createApolloServer(
   db: Db,

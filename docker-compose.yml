@@ -7,23 +7,22 @@ services:
       - "27017:27017"
     volumes:
       - mongodata:/data/db
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: password
   redis:
     image: "redis:alpine"
     ports:
       - "6379:6379"
-  # server:
-  #   build: .
-  #   image: chatting-app
-  #   environment:
-  #     DB_URL: "mongodb://mongo:27017/chatting-app"
-  #     JWT_AUTH_SALT: amberyan      
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - mongo
+  server:
+    build: .
+    image: chatting-app
+    environment:
+      DB_URL: "mongodb://mongo:27017/chatting-app"
+      JWT_AUTH_SALT: amberyan
+      REDIS_DOMAIN_NAME: redis      
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+      - redis
 
 # Storage Volumes (non-volatile)
 volumes:
