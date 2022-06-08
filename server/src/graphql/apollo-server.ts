@@ -15,7 +15,7 @@ import * as jwt from 'jsonwebtoken'
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import * as Redis from 'ioredis';
 
-import { GRAPHQL_SCHEMA_PATH } from "../constants"
+import { AppConstants } from "../constants/app.constants";
 import Db from '../db';
 import resolvers, { ResolverContext } from "./resolvers";
 import { WebSocketServer } from 'ws';
@@ -24,7 +24,7 @@ import { useServer } from 'graphql-ws/lib/use/ws';
 // db schema
 import Users from "../models/users";
 
-const SCHEMA = loadSchemaSync(GRAPHQL_SCHEMA_PATH, {
+const SCHEMA = loadSchemaSync(AppConstants.GRAPHQL_SCHEMA_PATH, {
   loaders: [new GraphQLFileLoader()],
 })
 declare var process : {
@@ -33,7 +33,7 @@ declare var process : {
     JWT_AUTH_SALT: string,
   }
 }
-console.log('REDIS_DOMAIN_NAME', process.env.REDIS_DOMAIN_NAME);
+
 const options = {
   host: process.env.REDIS_DOMAIN_NAME || '',
   port: 6379,
@@ -56,14 +56,10 @@ export async function createApolloServer(
 
   // Creating the WebSocket server
   const wsServer = new WebSocketServer({
-    // This is the `httpServer` we created in a previous step.
     server: httpServer,
-    // Pass a different path here if your ApolloServer serves at
-    // a different path.
     path: '/graphql',
   });
 
-  // Hand in the schema we just created and have the
   // WebSocketServer start listening.
   const serverCleanup = useServer({ schema: graphqlSchema }, wsServer); 
   
