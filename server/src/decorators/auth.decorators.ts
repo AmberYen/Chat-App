@@ -5,7 +5,7 @@ import { ErrorConstants } from '../constants/errors.constants';
 export function VerifyAuthorization(
   _target: any,
   _propertyKey: string,
-  descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<void>>
+  descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>
 ) {
   const fn = descriptor.value!;
   descriptor.value = async function DescriptorValue(...args: any[]) {
@@ -15,6 +15,7 @@ export function VerifyAuthorization(
       }
       return await fn.apply(this, args);
     } catch (error) {
+      console.log('error', error);
       throw new GraphQLError(ErrorConstants.UNEXPECTED_ERROR);
     }
   };
