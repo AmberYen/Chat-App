@@ -1,8 +1,8 @@
 import { ResolverContext } from "../resolvers"
 import { MutationResolvers } from "../../resolvers-types.generated"
+import { SubscriptionConstants } from '../../constants/subscription.constants';
 
-const mutationMessageResolver: MutationResolvers<ResolverContext> =
-  {
+const mutationMessageResolver: MutationResolvers<ResolverContext> = {
     async createMessage(_parent, args, { db, pubsub }) {
       const { senderId, receiverId, message } = args;
 
@@ -13,7 +13,7 @@ const mutationMessageResolver: MutationResolvers<ResolverContext> =
       );
 
       if (pubsub) {
-        pubsub.publish('new_message', {
+        pubsub.publish(SubscriptionConstants.NEW_MESSAGE, {
           newMessage: dbMessage,
           receiverId
         });
@@ -21,5 +21,5 @@ const mutationMessageResolver: MutationResolvers<ResolverContext> =
 
       return dbMessage;
     },
-  }
+}
 export default mutationMessageResolver
