@@ -11,7 +11,6 @@ import { Server } from "http"
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader"
 import { loadSchemaSync } from "@graphql-tools/load"
 import { addResolversToSchema } from "@graphql-tools/schema"
-import * as jwt from 'jsonwebtoken'
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import * as Redis from 'ioredis';
 
@@ -20,9 +19,9 @@ import Db from '../db';
 import resolvers, { ResolverContext } from "./resolvers";
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
+import { MongoHelper, VerifiedUserContext } from "../helpers/mongoHelper";
 
-// db schema
-import Users from "../models/users";
+const mHelper = new MongoHelper();
 
 const SCHEMA = loadSchemaSync(AppConstants.GRAPHQL_SCHEMA_PATH, {
   loaders: [new GraphQLFileLoader()],
@@ -63,24 +62,14 @@ export async function createApolloServer(
   // WebSocketServer start listening.
   const serverCleanup = useServer({ schema: graphqlSchema }, wsServer); 
   
-  const context: ({ req }: any) => Promise<ResolverContext> = async ({ req }: any) => {
+  const context: ({ req }: any) => Promise<ResolverContext|VerifiedUserContext> = async ({ req }: any) => {
     // verify user
-    const token = req.headers.authorization || '';
-    
-    try {
-      const payload = <{ data: string; iat: number }>(
-        jwt.verify(token, <string>process.env.JWT_AUTH_SALT)
-      );
-      const email = payload['data'];
-      // TODO: refactor
-      return await Users.find({ email: email }).then((response: any) => {
-        if (response.length > 0) {
-          return { isUserLogged: true, email: email, db, pubsub };
-        }
-        return { isUserLogged: false, db };
-      });
-    } catch (error) {
-      return { isUserLogged: false, db };
+    const verifiedInfo = await mHelper.validateUser(req);
+
+    if (verifiedInfo.isUserLogged) {
+      return { ...verifiedInfo, db, pubsub };
+    } else {
+      return verifiedInfo;
     }
   };
 

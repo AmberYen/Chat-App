@@ -3,25 +3,29 @@ dotenv.config();
 
 import mongoose = require('mongoose');
 import * as jwt from 'jsonwebtoken';
+import Users from '../models/users';
 
-const User = require('../models/users');
-
-const { DB_URL } = process.env;
+const { DB_URL, JWT_AUTH_SALT } = process.env;
+export interface VerifiedUserContext {
+  isUserLogged?: boolean;
+  email?: string;
+}
 
 export class MongoHelper {
   /**
    * This function returns either true of false based information present in the database via jwt
    * @param req
    */
-  public async validateUser(req: any) {
+  public async validateUser(req: any): Promise<VerifiedUserContext> {
     const token = req.headers.authorization || '';
     try {
       const payload = <{ data: string; iat: number }>(
-        jwt.verify(token, <string>process.env.auth_encryption_salt)
+        jwt.verify(token, <string>JWT_AUTH_SALT)
       );
-      const email = payload['data'];
-      return await User.findOne({ email: email }).then((res: any) => {
-        if (res && res.user) {
+
+      const email = payload?.data;
+      return await Users.findOne({ email: email }).then((res: any) => {
+        if (res) {
           return { isUserLogged: true, email: email };
         }
         return { isUserLogged: false };
@@ -32,7 +36,7 @@ export class MongoHelper {
   }
 
   /**
-   * This function will initiate the Mongo Database connection
+   * initiate the Mongo Database connection
    */
   public initiateMongoConnection(): void {
     (<any>mongoose).Promise = global.Promise;
