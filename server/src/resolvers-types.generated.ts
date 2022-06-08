@@ -16,7 +16,10 @@ export type Scalars = {
 
 export type Message = {
   __typename?: 'Message';
+  id: Scalars['String'];
   message: Scalars['String'];
+  receiverId: Scalars['String'];
+  senderId: Scalars['String'];
 };
 
 export type Mutation = {
@@ -55,6 +58,7 @@ export type SubscriptionNewMessageArgs = {
 
 export type User = {
   __typename?: 'User';
+  email: Scalars['String'];
   id: Scalars['String'];
   name: Scalars['String'];
 };
@@ -149,7 +153,10 @@ export type ResolversParentTypes = {
 };
 
 export type MessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = {
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  receiverId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  senderId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -168,6 +175,7 @@ export type SubscriptionResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
