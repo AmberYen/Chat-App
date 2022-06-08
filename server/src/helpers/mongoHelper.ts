@@ -23,7 +23,7 @@ export class MongoHelper {
         jwt.verify(token, <string>JWT_AUTH_SALT)
       );
 
-      const email = payload?.data;
+      const email = payload && payload.data;
       return await Users.findOne({ email: email }).then((res: any) => {
         if (res) {
           return { isUserLogged: true, email: email };

@@ -15,7 +15,7 @@ export function VerifyAuthorization(
       }
       return await fn.apply(this, args);
     } catch (error) {
-      throw new GraphQLError(error);
+      throw new GraphQLError(ErrorConstants.UNEXPECTED_ERROR);
     }
   };
   return descriptor;
