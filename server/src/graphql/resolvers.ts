@@ -8,7 +8,7 @@ export interface ResolverContext {
   db: Db
   isUserLogged: boolean
   email?: string
-  pubsub?: RedisPubSub
+  pubsub: RedisPubSub
 }
 
 // TODO: fix type check issue here

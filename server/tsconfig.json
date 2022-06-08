@@ -4,7 +4,8 @@
     "outDir": "dist",
     "module": "CommonJS",
     "baseUrl": "./src",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true
   },
   "include": ["src"]
 }
