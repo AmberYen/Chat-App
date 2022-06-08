@@ -1,10 +1,10 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-import mongoose = require('mongoose');
+import { MongoHelper } from 'helpers/mongoHelper';
 import Users from '../models/users';
 
-const { DB_URL  } = process.env;
+const mHelper = new MongoHelper();
 
 const mockUsers = [   
   new Users({
@@ -25,18 +25,12 @@ const mockUsers = [
   }),
 ]
 
-mongoose.connect(DB_URL || 'mongodb://localhost/chatting-app').then(() => {
-  console.log('Connected to MongoDb');
-})
-.catch((err: Error) => {
-  throw `There is error in connecting Mongo DB ${err.message}`;
-});
+mHelper.initiateMongoConnection();
 
 mockUsers.map((u, index) => {
   u.save(() => {
     if (index === mockUsers.length - 1) {
       console.log("DONE!");
-      mongoose.disconnect();
     }
   });
 });

@@ -2,22 +2,19 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 import * as express from 'express';
-import mongoose = require('mongoose');
 import { createServer } from "http"
 
 import { createApolloServer } from "./graphql/apollo-server";
 import Db from './db';
+import { MongoHelper } from './helpers/mongoHelper';
 
-const { DB_URL, PORT } = process.env;
+const { PORT } = process.env;
 
 const app = express();
 
-mongoose.connect(DB_URL || 'mongodb://localhost/chatting-app').then(() => {
-  console.log('Connected to MongoDb');
-})
-.catch((err: Error) => {
-  throw `There is error in connecting Mongo DB ${err.message}`;
-});
+// create mongo connection
+const mHelper = new MongoHelper();
+mHelper.initiateMongoConnection();
 
 async function main() {
   const db = new Db();
