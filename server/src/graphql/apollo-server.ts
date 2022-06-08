@@ -1,6 +1,3 @@
-const dotenv = require('dotenv');
-dotenv.config();
-
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core"
 import {
   ApolloServer,
@@ -11,8 +8,6 @@ import { Server } from "http"
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader"
 import { loadSchemaSync } from "@graphql-tools/load"
 import { addResolversToSchema } from "@graphql-tools/schema"
-import { RedisPubSub } from 'graphql-redis-subscriptions';
-import * as Redis from 'ioredis';
 
 import { AppConstants } from "../constants/app.constants";
 import Db from '../db';
@@ -20,28 +15,16 @@ import resolvers, { ResolverContext } from "./resolvers";
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { MongoHelper, VerifiedUserContext } from "../helpers/mongoHelper";
+import { RedisHelper } from "../helpers/redisHelper";
 
 const mHelper = new MongoHelper();
+const rHelper = new RedisHelper();
+
+const pubsub = rHelper.getPubSub();
 
 const SCHEMA = loadSchemaSync(AppConstants.GRAPHQL_SCHEMA_PATH, {
   loaders: [new GraphQLFileLoader()],
 })
-declare var process : {
-  env: {
-    REDIS_DOMAIN_NAME: string,
-    JWT_AUTH_SALT: string,
-  }
-}
-
-const options = {
-  host: process.env.REDIS_DOMAIN_NAME || '',
-  port: 6379,
-};
-
-const pubsub = new RedisPubSub({
-  publisher: new Redis(options),
-  subscriber: new Redis(options)
-});
 
 export async function createApolloServer(
   db: Db,
