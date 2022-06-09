@@ -19,13 +19,14 @@ WORKDIR $APP_DIR
 
 ## Install devdependencies first for building time to cache
 COPY ["./package*.json", "./yarn.lock", "./tsconfig.json", "./"]
-COPY server $APP_DIR/server
-COPY client $APP_DIR/client
+COPY ["./server/package*.json", "./yarn.lock", "./server/"] 
 
 RUN yarn install --ignore-scripts
 
 # check files list
 RUN ls -a
+
+COPY . .
 
 RUN yarn build-server
 

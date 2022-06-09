@@ -28,7 +28,6 @@
     "@typescript-eslint/parser": "^5.16.0"
   },
   "workspaces": [
-    "client",
     "server"
   ]
 }

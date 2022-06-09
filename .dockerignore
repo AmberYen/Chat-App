@@ -1,5 +1,4 @@
 node_modules
-npm-debug.log
 Dockerfile*
 docker-compose*
 .dockerignore
@@ -10,3 +9,6 @@ LICENSE
 dist
 .vscode
 .env.development
+.prettierignore
+.prettierrc
+.eslintrc.json
