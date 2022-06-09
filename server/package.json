@@ -7,7 +7,8 @@
     "build": "tsc -p .",
     "codegen": "yarn graphql-codegen",
     "dev": "yarn concurrently 'yarn nodemon' 'tsc --watch --preserveWatchOutput' -n node,ts -c green.bgBlack,white.bgBlue",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/index.js",
+    "test": "jest --verbose ./dist --detectOpenHandles"
   },
   "keywords": [
     "node.js",
@@ -46,10 +47,13 @@
     "@graphql-codegen/typescript-resolvers": "^2.6.1",
     "@types/express": "^4.17.13",
     "@types/ioredis": "^4.28.10",
+    "@types/jest": "^28.1.1",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^17.0.21",
     "concurrently": "^7.0.0",
+    "jest": "^28.1.1",
     "nodemon": "^2.0.15",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "ts-jest": "^28.0.4"
   }
 }
