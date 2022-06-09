@@ -7,7 +7,7 @@ import { RedisPubSub } from "graphql-redis-subscriptions";
 export interface ResolverContext {
   db: Db
   isUserLogged: boolean
-  email?: string
+  email: string
   pubsub: RedisPubSub
 }
 
