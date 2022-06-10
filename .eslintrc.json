@@ -1,0 +1,69 @@
+{
+  "env": {
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "settings": {
+    "node": {
+      "tryExtensions": [".js", ".json", ".node", ".ts"]
+    }
+  },
+  "plugins": ["react", "@typescript-eslint"],
+  "ignorePatterns": ["**/node_modules/", "**/dist/"],
+  "rules": {
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unused-vars": "off"
+  },
+  "overrides": [
+    {
+      "files": "server/**/*.ts",
+      "extends": ["plugin:node/recommended"],
+      "parserOptions": {
+        "project": "./server/tsconfig.json"
+      },
+      "env": { "node": true },
+      "rules": {
+        "node/no-unsupported-features/es-syntax": [
+          "error",
+          { "ignores": ["modules"] }
+        ]
+      }
+    },
+    {
+      "files": "server/**/*.generated.ts",
+      "extends": ["plugin:node/recommended"],
+      "parserOptions": {
+        "project": "./server/tsconfig.json"
+      },
+      "env": { "node": true },
+      "rules": {
+        "node/no-unsupported-features/es-syntax": [
+          "error",
+          { "ignores": ["modules"] }
+        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/ban-types": "off"
+      }
+    },
+    {
+      "files": "shared/**/*.ts",
+      "parserOptions": {
+        "project": "./shared/tsconfig.json"
+      }
+    }
+  ]
+}
