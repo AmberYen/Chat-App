@@ -12,6 +12,11 @@ Use jest to implement unit test for this project.
 
 # <p><img width="500px" src="http://g.recordit.co/D7SkOEouhn.gif" alt="Chat App GraphQL screen recording"></a></p>
 
+## Features
+- [x] Able to One to One send messages
+- [x] Able to get JWT Token & Check authorization
+- [x] Support Dockerfile & Docker Compose
+- [x] Support Unit Test
 
 ## Setup
 
