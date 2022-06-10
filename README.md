@@ -21,6 +21,8 @@ Use jest to implement unit test for this project.
 
 :white_check_mark: Support Unit Test
 
+:white_check_mark: Full Typescript type checked
+
 ## Setup
 
 ### For local development
