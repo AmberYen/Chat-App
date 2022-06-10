@@ -1,4 +1,4 @@
-# ChattingApp
+# Chat App
 A chat app build from scatch and utilize with Node.js, Graphql, MongoDB and Redis.
 
 You can also run it with Docker! 
@@ -157,6 +157,14 @@ You can run unit test for this project
 cd server
 yarn test
 ```
+
+## To be continued
+- [ ] Build Frontend page for real chatting 
+- [ ] Build Session service
+- [ ] Build Graphql API gateway (connect to session service and multiple users with different gateway)
+- [ ] Implement Send/Delivered/Read status
+- [ ] Implement user online status
+- [ ] Cache user online status via Apollo CacheControl
 
 ## Legal
 
