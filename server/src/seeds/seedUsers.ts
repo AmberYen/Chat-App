@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-import { MongoHelper } from 'helpers/mongoHelper';
+import { MongoHelper } from '../helpers/mongoHelper';
 import Users from '../models/users';
 
 const mHelper = new MongoHelper();

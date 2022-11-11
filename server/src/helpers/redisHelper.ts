@@ -7,13 +7,16 @@ import * as Redis from 'ioredis';
 declare var process : {
   env: {
     REDIS_DOMAIN_NAME: string,
+    REDIS_PORT: number,
+    REDIS_PASSWORD: string,
     JWT_AUTH_SALT: string,
   }
 }
 
 const options = {
   host: process.env.REDIS_DOMAIN_NAME || '',
-  port: 6379,
+  port: process.env.REDIS_PORT || 6379,
+  password: process.env.REDIS_PASSWORD || '',
 };
 export class RedisHelper {
   /**
